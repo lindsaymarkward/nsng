@@ -8,7 +8,7 @@ import { Http } from '@angular/http';
 // libs
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateLoader } from 'ng2-translate/ng2-translate';
 
 // app
 import { AppComponent } from './app/components/app.component';
@@ -46,12 +46,22 @@ if (String('<%= TARGET_DESKTOP %>') === 'true') {
   routerModule = RouterModule.forRoot(routes, {useHash: true});
 }
 
+declare var window, console;
+
+// For AoT compilation to work:
+export function win() {
+  return window;
+}
+export function cons() {
+  return console;
+}
+
 @NgModule({
   imports: [
     BrowserModule,
     CoreModule.forRoot([
-      { provide: WindowService, useValue: window },
-      { provide: ConsoleService, useValue: console }
+      { provide: WindowService, useFactory: (win) },
+      { provide: ConsoleService, useFactory: (cons) }
     ]),
     routerModule,
     AnalyticsModule,
